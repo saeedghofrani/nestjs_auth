@@ -1,18 +1,17 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from './auth.service';
+import { Injectable } from '@nestjs/common';
+import { Payload } from 'src/types/payload';
+import { sign } from 'jsonwebtoken';
+import { UserService } from 'src/user/user.service';
 
-describe('AuthService', () => {
-  let service: AuthService;
+@Injectable()
+export class AuthService {
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService],
-    }).compile();
-
-    service = module.get<AuthService>(AuthService);
-  });
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-});
+  constructor(private userService: UserService) {}
+  
+  async signPayload(payload: Payload) {
+    return sign(payload, process.env.SECRET_KEY, { expiresIn: '7d' });
+  }
+  async validateUser(payload: Payload) {
+    return await this.userService.findByPayload(payload);
+  }
+}
