@@ -5,6 +5,9 @@ import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
+  validateUser(payload: any) {
+      throw new Error('Method not implemented.');
+  }
 
   constructor(private userService: UserService) {}
   

@@ -1,9 +1,9 @@
+
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport/dist/auth.guard';
 import { RegisterDTO } from 'src/user/rigester.dto';
 import { UserService } from 'src/user/user.service';
-import { AuthService } from './auth.service';
-import { LoginDTO } from './login.dto';
+import { AuthService } from 'src/auth/auth.service';
+import { LoginDTO } from '../auth/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -13,23 +13,9 @@ export class AuthController {
 
     ) { }
 
-
-    @Get("/onlyauth")
-    @UseGuards(AuthGuard("jwt"))
-
-    async hiddenInformation() {
-        return "hidden information";
-    }
-
-    @Get("/anyone")
-
-    async publicInformation() {
-        return "this can be seen by anyone";
-    }
-
     @Post('register')
-    async register(@Body() registerDTO: RegisterDTO) {
-        const user = await this.userService.create(registerDTO);
+    async register(@Body() RegisterDTO: RegisterDTO) {
+        const user = await this.userService.create(RegisterDTO);
         const payload = {
 
             email: user.email,
@@ -39,8 +25,8 @@ export class AuthController {
         return { user, token };
     }
     @Post('login')
-    async login(@Body() loginDTO: LoginDTO) {
-        const user = await this.userService.findByLogin(loginDTO);
+    async login(@Body() UserDTO: LoginDTO) {
+        const user = await this.userService.findByLogin(UserDTO);
         const payload = {
             email: user.email,
         };
@@ -48,6 +34,4 @@ export class AuthController {
         return { user, token };
     }
 
-
-
-}   
+}
